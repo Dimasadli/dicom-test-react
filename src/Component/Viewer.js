@@ -5,10 +5,9 @@ import CornerstoneViewport from "react-cornerstone-viewport";
 import axios from "axios";
 import cornerstoneWADOImageLoader from "cornerstone-wado-image-loader";
 
-
 class Viewer extends Component {
   stack1 = [];
-  
+
   stack2 = ["dicomweb://127.0.0.1:8000/media/2023/01/15/1673788303706.dcm"];
 
   state = {
@@ -69,7 +68,8 @@ class Viewer extends Component {
       );
       files.push(image);
     }
-    this.stack1 = files
+
+    this.stack1 = files;
     this.setState({
       imageIds: files,
     });
@@ -112,8 +112,7 @@ class Viewer extends Component {
                     this.setState({ activeTool: evt.target.value })
                   }
                   className="form-control"
-                  id="active-tool"
-                >
+                  id="active-tool">
                   <option value="Wwwc">Wwwc</option>
                   <option value="Zoom">Zoom</option>
                   <option value="Pan">Pan</option>
@@ -153,7 +152,9 @@ class Viewer extends Component {
                   defaultValue={1}
                   onChange={(evt) => {
                     const selectedStack =
-                      parseInt(evt.target.value) === 1 ? this.stack1 : this.stack2;
+                      parseInt(evt.target.value) === 1
+                        ? this.stack1
+                        : this.stack2;
 
                     this.setState({
                       imageIds: selectedStack,
@@ -161,8 +162,7 @@ class Viewer extends Component {
                     });
                   }}
                   className="form-control"
-                  id="image-id-stack"
-                >
+                  id="image-id-stack">
                   <option value="1">Stack 1</option>
                   <option value="2">Stack 2</option>
                 </select>
@@ -179,8 +179,7 @@ class Viewer extends Component {
                   readOnly={true}
                   value={this.state.activeViewportIndex}
                   className="form-control"
-                  id="active-viewport-index"
-                ></input>
+                  id="active-viewport-index"></input>
               </div>
               <div className="input-group">
                 <span className="input-group-btn">
@@ -195,8 +194,7 @@ class Viewer extends Component {
                       this.setState({
                         isPlaying: !this.state.isPlaying,
                       });
-                    }}
-                  >
+                    }}>
                     {this.state.isPlaying
                       ? "Stop Start Image Slider"
                       : "Start Image Slider"}
