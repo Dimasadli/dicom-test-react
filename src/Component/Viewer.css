@@ -1,0 +1,30 @@
+.container-viewport {
+  height: 500px;
+  width: 100%;
+}
+
+.container-viewport__form {
+  max-width: 50%;
+  margin-top: 35px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.viewport__form-label {
+  color: #252526;
+}
+
+.viewport__empty {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  margin: auto;
+  width: 100%;
+  background-color: hsl(200, 20%, 80%);
+  height: 100%;
+  border-radius: 8px;
+}
+.viewport__empty-title {
+  color: #252526;
+}
