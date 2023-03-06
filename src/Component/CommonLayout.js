@@ -6,8 +6,8 @@ function CommonLayout({ children }) {
     <>
       {children}
       <footer id="footer">
-        <div class="container footer-bottom clearfix">
-          <div class="copyright">
+        <div className="container footer-bottom clearfix">
+          <div className="copyright">
             &copy; Copyright{" "}
             <strong>
               <span>Medic-Innovate.AI</span>

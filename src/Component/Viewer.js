@@ -6,6 +6,8 @@ import axios from "axios";
 import cornerstoneWADOImageLoader from "cornerstone-wado-image-loader";
 import "./Viewer.css";
 import Skeleton from "./Skeleton";
+import queryString from "query-string";
+import { isEmpty } from "lodash";
 
 class Viewer extends Component {
   state = {
@@ -51,33 +53,44 @@ class Viewer extends Component {
 
   componentDidMount() {
     const fetchData = async () => {
-      const files = [];
-      const url = "http://127.0.0.1:8000/media/2022/05/17/1652787779995.zip";
-      const { data } = await axios.get(url, {
-        headers: {
-          "Content-Type": "application/zip",
-        },
-        responseType: "arraybuffer",
-      });
-      const zip = await JSZip.loadAsync(data);
-      const filenames = Object.keys(zip.files);
-      for (const filename of filenames) {
-        const dicom = await zip.files[filename].async("blob");
-        const image = await cornerstoneWADOImageLoader.wadouri.fileManager.add(
-          dicom
-        );
-        files.push(image);
+      const query = queryString.parse(window.location.search);
+      let files = [];
+      let url = "";
+
+      try {
+        if (!isEmpty(query)) {
+          if (!query.data.includes(".dcm")) {
+            url = `http://127.0.0.1:8000/media/${query.data}`;
+            const { data } = await axios.get(url, {
+              headers: {
+                "Content-Type": "application/zip",
+              },
+              responseType: "arraybuffer",
+            });
+            const zip = await JSZip.loadAsync(data);
+            const filenames = Object.keys(zip.files);
+            for (const filename of filenames) {
+              const dicom = await zip.files[filename].async("blob");
+              const image =
+                await cornerstoneWADOImageLoader.wadouri.fileManager.add(dicom);
+              files.push(image);
+            }
+          } else {
+            url = `dicomweb://127.0.0.1:8000/media/${query.data}`;
+            files.push(url);
+          }
+        }
+      } catch (err) {
+        console.log(err);
       }
 
       this.setState({
         imageIds: files,
       });
 
-      setTimeout(() => {
-        this.setState({
-          isLoading: false,
-        });
-      }, 1000);
+      this.setState({
+        isLoading: false,
+      });
     };
     fetchData();
   }
@@ -88,8 +101,16 @@ class Viewer extends Component {
         <div
           style={{ display: "flex", flexWrap: "wrap" }}
           className={"container-viewport"}>
-          {!this.state.imageIds.length && this.state.isLoading ? (
-            <Skeleton />
+          {isEmpty(this.state.imageIds) ? (
+            this.state.isLoading ? (
+              <Skeleton />
+            ) : (
+              <div className="viewport__empty">
+                <h2 className="viewport__empty-title">
+                  There's no data to display
+                </h2>
+              </div>
+            )
           ) : (
             this.state.viewports.map((vp) => (
               <CornerstoneViewport
